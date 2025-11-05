@@ -1,0 +1,29 @@
+name: Endor Labs PR Check for Vulns and Secrets
+on:
+  pull_request:
+    branches: [ main]
+  workflow_dispatch:
+jobs:
+  scan:
+    permissions:
+      security-events: write 
+      contents: read 
+      id-token: write 
+      issues: write # Required to automatically comment on PRs for new policy violations
+      pull-requests: write # Required to automatically comment on PRs for new policy violations
+      actions: read
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+    - name: Build Package
+      run: npm install
+    - name: Endor Labs Scan Pull Request
+      uses: endorlabs/github-action@v1.1.7
+      with:
+        namespace: 'nate-learn'
+        scan_dependencies: true
+        scan_secrets: true
+        pr: true
+        enable_pr_comments: true
+        github_token: ${{ secrets.GITHUB_TOKEN }} # Required for PR comments on new policy violations
