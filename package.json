@@ -14,8 +14,7 @@
     "@ember/string": "^4.0.1",
     "ember-template-imports": "^4.3.0",
     "pkg": "5.8.1",
-    "tslip": "github:nmichalov/tslip",
-    "ice-components-dto-search": "2.0.0"
+    "devexpress-reporting": "^25.1.6"
   },
   "devDependencies": {
     "nodemon": "^3.0.2",
