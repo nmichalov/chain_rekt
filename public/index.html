@@ -33,6 +33,54 @@
             margin-top: 2rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        .vulnerability-section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            border: 2px solid #e74c3c;
+            border-radius: 8px;
+            background-color: #fff5f5;
+        }
+        .vulnerability-section h3 {
+            color: #e74c3c;
+            margin-top: 0;
+        }
+        input[type="text"] {
+            width: 70%;
+            padding: 0.5rem;
+            margin-right: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        code {
+            background-color: #f8f9fa;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        #searchResult {
+            margin-top: 1rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 50px;
+        }
     </style>
 </head>
 <body>
@@ -44,7 +92,39 @@
     <main class="container">
         <div class="content">
             <h2>Welcome to Chain Rekt</h2>
-            <p>Your modern JavaScript application is up and running!</p>
+            <p style="color: #e74c3c; font-weight: bold;">⚠️ WARNING: This application contains intentional security vulnerabilities for demo purposes only!</p>
+            
+            <div class="vulnerability-section">
+                <h3>1. Reflected XSS Vulnerability</h3>
+                <p>Try searching for: <code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code></p>
+                <input type="text" id="searchInput" placeholder="Enter search query">
+                <button onclick="performSearch()">Search</button>
+                <div id="searchResult"></div>
+            </div>
+
+            <div class="vulnerability-section">
+                <h3>2. OS Command Injection Vulnerability</h3>
+                <p>Try: <code>localhost; cat /etc/passwd</code> or <code>localhost && whoami</code></p>
+                <input type="text" id="pingInput" placeholder="Enter host to ping">
+                <button onclick="performPing()">Ping Host</button>
+                <pre id="pingResult"></pre>
+            </div>
+
+            <div class="vulnerability-section">
+                <h3>3. SQL Injection (Simulated)</h3>
+                <p>Try: <code>' OR '1'='1</code></p>
+                <input type="text" id="userIdInput" placeholder="Enter user ID">
+                <button onclick="fetchUser()">Fetch User</button>
+                <pre id="userResult"></pre>
+            </div>
+
+            <div class="vulnerability-section">
+                <h3>4. Path Traversal Vulnerability</h3>
+                <p>Try: <code>../../../etc/passwd</code></p>
+                <input type="text" id="fileInput" placeholder="Enter filename">
+                <button onclick="fetchFile()">Fetch File</button>
+                <pre id="fileResult"></pre>
+            </div>
         </div>
     </main>
     <script src="/js/app.js"></script>
