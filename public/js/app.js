@@ -82,4 +82,65 @@ function loadConfigMessage() {
     const messageType = document.getElementById('configMessageInput').value;
     // Vulnerable: Opening config-based XSS payload in new window
     window.open(`/api/config-message?type=${encodeURIComponent(messageType)}`, '_blank');
+}
+
+// BUSINESS LOGIC FLAW 1: IDOR - Insecure Direct Object Reference
+function viewOrder() {
+    const orderId = document.getElementById('orderIdInput').value;
+    fetch(`/api/order?orderId=${encodeURIComponent(orderId)}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('orderResult').textContent = 
+                JSON.stringify(data, null, 2);
+        })
+        .catch(error => {
+            document.getElementById('orderResult').textContent = 
+                'Error: ' + error.message;
+        });
+}
+
+// BUSINESS LOGIC FLAW 2: Negative Quantity Purchase
+function makePurchase() {
+    const productId = document.getElementById('productSelect').value;
+    const quantity = parseInt(document.getElementById('quantityInput').value);
+    
+    fetch('/api/purchase', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            productId: productId,
+            quantity: quantity,
+            userId: 2  // Simulating logged-in user
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('purchaseResult').textContent = 
+            JSON.stringify(data, null, 2);
+    })
+    .catch(error => {
+        document.getElementById('purchaseResult').textContent = 
+            'Error: ' + error.message;
+    });
+}
+
+// BUSINESS LOGIC FLAW 3: Missing Function-Level Access Control
+function deleteUser() {
+    const currentUser = document.getElementById('currentUserSelect').value;
+    const targetUserId = document.getElementById('deleteUserInput').value;
+    
+    fetch(`/api/admin/delete-user?userId=${encodeURIComponent(targetUserId)}&currentUser=${encodeURIComponent(currentUser)}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('deleteResult').textContent = 
+            JSON.stringify(data, null, 2);
+    })
+    .catch(error => {
+        document.getElementById('deleteResult').textContent = 
+            'Error: ' + error.message;
+    });
 } 

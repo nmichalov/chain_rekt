@@ -62,6 +62,16 @@
         button:hover {
             background-color: #2980b9;
         }
+        select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+        label {
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
         code {
             background-color: #f8f9fa;
             padding: 0.2rem 0.4rem;
@@ -141,6 +151,49 @@
                 <input type="text" id="configMessageInput" placeholder="Enter message type" value="adminMessage">
                 <button onclick="loadConfigMessage()">Load Message</button>
                 <div id="configResult"></div>
+            </div>
+
+            <h2 style="margin-top: 3rem; color: #e67e22;">Business Logic Flaws</h2>
+
+            <div class="vulnerability-section">
+                <h3>6. IDOR - Insecure Direct Object Reference</h3>
+                <p>Try order IDs: <code>1001</code> (admin's), <code>1002</code> (john_doe's), <code>1003</code> (admin's), <code>1004</code> (john_doe's)</p>
+                <p style="font-size: 0.9em; color: #555;">No authorization check - view anyone's order!</p>
+                <input type="text" id="orderIdInput" placeholder="Enter order ID" value="1002">
+                <button onclick="viewOrder()">View Order</button>
+                <pre id="orderResult"></pre>
+            </div>
+
+            <div class="vulnerability-section">
+                <h3>7. Negative Quantity Purchase</h3>
+                <p>Try quantity: <code>-10</code> to get money instead of spending it!</p>
+                <p style="font-size: 0.9em; color: #555;">No validation on quantity field</p>
+                <label>Product:</label>
+                <select id="productSelect">
+                    <option value="501">Premium Laptop ($1299.99)</option>
+                    <option value="502">Wireless Mouse ($29.99)</option>
+                    <option value="503">Mechanical Keyboard ($149.99)</option>
+                </select><br><br>
+                <label>Quantity:</label>
+                <input type="number" id="quantityInput" placeholder="Enter quantity" value="-10" style="width: 200px;">
+                <button onclick="makePurchase()">Purchase</button>
+                <pre id="purchaseResult"></pre>
+            </div>
+
+            <div class="vulnerability-section">
+                <h3>8. Missing Function-Level Access Control</h3>
+                <p>Admin endpoint with no role check - regular users can delete accounts!</p>
+                <p style="font-size: 0.9em; color: #555;">Try deleting user 1 (admin) or user 3 as user 2 (non-admin)</p>
+                <label>Current User (You):</label>
+                <select id="currentUserSelect">
+                    <option value="1">User 1 - admin (role: admin)</option>
+                    <option value="2" selected>User 2 - john_doe (role: user)</option>
+                    <option value="3">User 3 - hacker (role: user)</option>
+                </select><br><br>
+                <label>Delete User ID:</label>
+                <input type="text" id="deleteUserInput" placeholder="User ID to delete" value="1">
+                <button onclick="deleteUser()">Delete User (Admin Action)</button>
+                <pre id="deleteResult"></pre>
             </div>
         </div>
     </main>

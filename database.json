@@ -4,19 +4,25 @@
       "id": 1,
       "username": "admin",
       "email": "admin@example.com",
-      "searchPreference": "status='active'"
+      "searchPreference": "status='active'",
+      "role": "admin",
+      "accountBalance": 1000.00
     },
     {
       "id": 2,
       "username": "john_doe",
       "email": "john@example.com",
-      "searchPreference": "status='active' AND department='sales'"
+      "searchPreference": "status='active' AND department='sales'",
+      "role": "user",
+      "accountBalance": 250.00
     },
     {
       "id": 3,
       "username": "hacker'; DROP TABLE employees; --",
       "email": "malicious@evil.com",
-      "searchPreference": "1=1 OR status='inactive'"
+      "searchPreference": "1=1 OR status='inactive'",
+      "role": "user",
+      "accountBalance": 0.00
     }
   ],
   "employees": [
@@ -47,6 +53,60 @@
       "department": "hr",
       "status": "active",
       "salary": 80000
+    }
+  ],
+  "orders": [
+    {
+      "orderId": 1001,
+      "userId": 1,
+      "items": "Laptop, Mouse",
+      "total": 1299.99,
+      "status": "shipped",
+      "shippingAddress": "123 Admin St, Admin City"
+    },
+    {
+      "orderId": 1002,
+      "userId": 2,
+      "items": "Keyboard, Monitor",
+      "total": 450.00,
+      "status": "delivered",
+      "shippingAddress": "456 User Ave, User Town"
+    },
+    {
+      "orderId": 1003,
+      "userId": 1,
+      "items": "Webcam",
+      "total": 89.99,
+      "status": "processing",
+      "shippingAddress": "123 Admin St, Admin City"
+    },
+    {
+      "orderId": 1004,
+      "userId": 2,
+      "items": "USB Cable, Phone Case",
+      "total": 25.99,
+      "status": "shipped",
+      "shippingAddress": "456 User Ave, User Town"
+    }
+  ],
+  "products": [
+    {
+      "productId": 501,
+      "name": "Premium Laptop",
+      "price": 1299.99,
+      "stock": 10
+    },
+    {
+      "productId": 502,
+      "name": "Wireless Mouse",
+      "price": 29.99,
+      "stock": 50
+    },
+    {
+      "productId": 503,
+      "name": "Mechanical Keyboard",
+      "price": 149.99,
+      "stock": 25
     }
   ]
 }

@@ -172,6 +172,149 @@ app.get('/api/config-message', (req, res) => {
   });
 });
 
+// BUSINESS LOGIC FLAW 1: IDOR (Insecure Direct Object Reference)
+// Demo vulnerability: No authorization check - any user can view any order
+app.get('/api/order', (req, res) => {
+  const orderId = req.query.orderId;
+  const dbPath = path.join(__dirname, '../database.json');
+  
+  fs.readFile(dbPath, 'utf8', (err, data) => {
+    if (err) {
+      res.status(500).json({ error: 'Failed to read database' });
+      return;
+    }
+    
+    try {
+      const db = JSON.parse(data);
+      const order = db.orders.find(o => o.orderId === parseInt(orderId));
+      
+      if (!order) {
+        res.status(404).json({ error: 'Order not found' });
+        return;
+      }
+      
+      // VULNERABILITY: No check if the requesting user owns this order!
+      // In a real app, you'd verify: if (order.userId !== req.session.userId) { return 403 }
+      
+      res.json({
+        vulnerability: 'IDOR - Insecure Direct Object Reference',
+        issue: 'No authorization check - anyone can view any order by changing orderId',
+        order: order,
+        explanation: 'The application checks if the order EXISTS but not if the user is AUTHORIZED to view it'
+      });
+      
+    } catch (parseError) {
+      res.status(500).json({ error: 'Invalid database format' });
+    }
+  });
+});
+
+// BUSINESS LOGIC FLAW 2: Negative Quantity Purchase
+// Demo vulnerability: No validation on quantity - can buy negative amounts
+app.post('/api/purchase', (req, res) => {
+  const { productId, quantity } = req.body;
+  const userId = req.body.userId || 2; // Simulating logged-in user
+  const dbPath = path.join(__dirname, '../database.json');
+  
+  fs.readFile(dbPath, 'utf8', (err, data) => {
+    if (err) {
+      res.status(500).json({ error: 'Failed to read database' });
+      return;
+    }
+    
+    try {
+      const db = JSON.parse(data);
+      const product = db.products.find(p => p.productId === parseInt(productId));
+      const user = db.users.find(u => u.id === parseInt(userId));
+      
+      if (!product) {
+        res.status(404).json({ error: 'Product not found' });
+        return;
+      }
+      
+      if (!user) {
+        res.status(404).json({ error: 'User not found' });
+        return;
+      }
+      
+      // VULNERABILITY: No validation that quantity is positive!
+      const totalPrice = product.price * quantity;
+      const newBalance = user.accountBalance - totalPrice;
+      
+      res.json({
+        vulnerability: 'Negative Quantity Purchase',
+        issue: 'No validation on quantity - can purchase negative amounts to gain money',
+        product: {
+          id: product.productId,
+          name: product.name,
+          price: product.price
+        },
+        transaction: {
+          quantity: quantity,
+          totalPrice: totalPrice,
+          oldBalance: user.accountBalance,
+          newBalance: newBalance
+        },
+        exploit: quantity < 0 ? 'EXPLOITED: Negative quantity credits money to account!' : 'Normal purchase',
+        explanation: 'If quantity is -10, the user gets CREDITED instead of CHARGED'
+      });
+      
+    } catch (parseError) {
+      res.status(500).json({ error: 'Invalid database format' });
+    }
+  });
+});
+
+// BUSINESS LOGIC FLAW 3: Missing Function-Level Access Control
+// Demo vulnerability: Admin endpoint with no role verification
+app.delete('/api/admin/delete-user', (req, res) => {
+  const targetUserId = req.query.userId;
+  const currentUserId = req.query.currentUser || 2; // Simulating logged-in user (non-admin)
+  const dbPath = path.join(__dirname, '../database.json');
+  
+  fs.readFile(dbPath, 'utf8', (err, data) => {
+    if (err) {
+      res.status(500).json({ error: 'Failed to read database' });
+      return;
+    }
+    
+    try {
+      const db = JSON.parse(data);
+      const currentUser = db.users.find(u => u.id === parseInt(currentUserId));
+      const targetUser = db.users.find(u => u.id === parseInt(targetUserId));
+      
+      if (!targetUser) {
+        res.status(404).json({ error: 'Target user not found' });
+        return;
+      }
+      
+      // VULNERABILITY: No check if currentUser has admin role!
+      // Should have: if (currentUser.role !== 'admin') { return 403 }
+      
+      res.json({
+        vulnerability: 'Missing Function-Level Access Control',
+        issue: 'Admin endpoint accessible by non-admin users',
+        currentUser: {
+          id: currentUser.id,
+          username: currentUser.username,
+          role: currentUser.role
+        },
+        action: 'DELETE USER',
+        targetUser: {
+          id: targetUser.id,
+          username: targetUser.username,
+          role: targetUser.role
+        },
+        exploit: currentUser.role !== 'admin' ? 'EXPLOITED: Non-admin user performing admin action!' : 'Legitimate admin action',
+        explanation: 'The endpoint is named /admin/ but does not verify the user has admin privileges'
+      });
+      
+    } catch (parseError) {
+      res.status(500).json({ error: 'Invalid database format' });
+    }
+  });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
