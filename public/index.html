@@ -119,11 +119,28 @@
             </div>
 
             <div class="vulnerability-section">
+                <h3>3B. Second-Order SQL Injection</h3>
+                <p>Try user IDs: <code>1</code> (safe), <code>2</code> (safe), <code>3</code> (malicious stored data)</p>
+                <p style="font-size: 0.9em; color: #555;">This demonstrates data from one table being used unsafely in another query</p>
+                <input type="text" id="userEmployeesInput" placeholder="Enter user ID (1, 2, or 3)" value="3">
+                <button onclick="fetchUserEmployees()">Get User's Employee Search</button>
+                <pre id="userEmployeesResult"></pre>
+            </div>
+
+            <div class="vulnerability-section">
                 <h3>4. Path Traversal Vulnerability</h3>
                 <p>Try: <code>../../../etc/passwd</code></p>
                 <input type="text" id="fileInput" placeholder="Enter filename">
                 <button onclick="fetchFile()">Fetch File</button>
                 <pre id="fileResult"></pre>
+            </div>
+
+            <div class="vulnerability-section">
+                <h3>5. Config-Based XSS (Stored XSS)</h3>
+                <p>Try message types: <code>welcomeMessage</code>, <code>adminMessage</code>, or <code>footerText</code></p>
+                <input type="text" id="configMessageInput" placeholder="Enter message type" value="adminMessage">
+                <button onclick="loadConfigMessage()">Load Message</button>
+                <div id="configResult"></div>
             </div>
         </div>
     </main>

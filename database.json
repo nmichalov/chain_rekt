@@ -1,0 +1,52 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "email": "admin@example.com",
+      "searchPreference": "status='active'"
+    },
+    {
+      "id": 2,
+      "username": "john_doe",
+      "email": "john@example.com",
+      "searchPreference": "status='active' AND department='sales'"
+    },
+    {
+      "id": 3,
+      "username": "hacker'; DROP TABLE employees; --",
+      "email": "malicious@evil.com",
+      "searchPreference": "1=1 OR status='inactive'"
+    }
+  ],
+  "employees": [
+    {
+      "id": 101,
+      "name": "Alice Smith",
+      "department": "sales",
+      "status": "active",
+      "salary": 75000
+    },
+    {
+      "id": 102,
+      "name": "Bob Johnson",
+      "department": "engineering",
+      "status": "active",
+      "salary": 95000
+    },
+    {
+      "id": 103,
+      "name": "Charlie Brown",
+      "department": "sales",
+      "status": "inactive",
+      "salary": 65000
+    },
+    {
+      "id": 104,
+      "name": "Diana Prince",
+      "department": "hr",
+      "status": "active",
+      "salary": 80000
+    }
+  ]
+}
