@@ -1,0 +1,5 @@
+{
+  "welcomeMessage": "<h2>Welcome User!</h2><p>This message is loaded from config.json</p>",
+  "adminMessage": "<script>alert('Config-based XSS!');</script><p>Admin panel loaded</p>",
+  "footerText": "<footer><strong>Chain Rekt</strong> - Demo Application</footer>"
+}

@@ -47,6 +47,21 @@ function fetchUser() {
         });
 }
 
+// VULNERABILITY 3B: Second-Order SQL Injection
+function fetchUserEmployees() {
+    const userId = document.getElementById('userEmployeesInput').value;
+    fetch(`/api/user-employees?userId=${encodeURIComponent(userId)}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('userEmployeesResult').textContent = 
+                JSON.stringify(data, null, 2);
+        })
+        .catch(error => {
+            document.getElementById('userEmployeesResult').textContent = 
+                'Error: ' + error.message;
+        });
+}
+
 // VULNERABILITY 4: Path Traversal
 function fetchFile() {
     const filename = document.getElementById('fileInput').value;
@@ -59,4 +74,12 @@ function fetchFile() {
             document.getElementById('fileResult').textContent = 
                 'Error: ' + error.message;
         });
+}
+
+// VULNERABILITY 5: Config-Based XSS (Stored XSS)
+// This function reads from config.json and renders raw HTML without sanitization
+function loadConfigMessage() {
+    const messageType = document.getElementById('configMessageInput').value;
+    // Vulnerable: Opening config-based XSS payload in new window
+    window.open(`/api/config-message?type=${encodeURIComponent(messageType)}`, '_blank');
 } 
