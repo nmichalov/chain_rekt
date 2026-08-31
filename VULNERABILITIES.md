@@ -342,6 +342,39 @@ app.delete('/api/admin/delete-user', requireAdmin, (req, res) => {
 
 ---
 
+## Vulnerable Dependencies (SCA / Supply Chain)
+
+These are intentionally pinned to known-vulnerable versions so that SCA and PR checks
+(`.github/workflows/endor_pr_scan.yml`) produce findings. `npm audit` currently reports
+**54 advisories (10 critical / 23 high)**.
+
+| Package | Pinned version | Representative issue |
+| --- | --- | --- |
+| `ejs` | 3.1.6 | Template injection → RCE (CVE-2022-29078) |
+| `handlebars` | 4.0.11 | Prototype pollution → arbitrary code execution |
+| `request` | 2.88.0 | SSRF (CVE-2023-28155); package deprecated |
+| `xmldom` | 0.1.31 | Misinterpretation of malicious XML (CVE-2021-21366) |
+| `axios` | 0.21.1 | SSRF / CSRF, ReDoS |
+| `lodash` | 4.17.15 | Command injection (CVE-2021-23337), prototype pollution |
+| `jsonwebtoken` | 8.5.1 | Forgeable tokens via RSA→HMAC key confusion |
+| `marked` | 0.3.6 | ReDoS, XSS via data URIs |
+| `moment` | 2.29.1 | Path traversal in `moment.locale`, ReDoS |
+| `node-fetch` | 2.6.0 | Secure headers forwarded to untrusted sites on redirect |
+| `serialize-javascript` | 2.1.2 | Insecure serialization → RCE |
+| `shelljs` | 0.8.4 | Improper privilege management |
+| `validator` | 10.11.0 | ReDoS, `isURL` validation bypass |
+| `ws` | 7.4.5 | ReDoS via `Sec-Websocket-Protocol` header |
+| `xlsx` | 0.17.0 | Prototype pollution, ReDoS (no fix available upstream) |
+
+Pre-existing pins retained: `fsevents@1.2.9`, `js-yaml@3.14.1`, `minimist@0.0.8`,
+`pkg@5.8.1`, `qs@6.13.0`, `tar@4.4.8`, `tar-fs@2.1.2`.
+
+**Note**: none of these are imported by application code yet, so reachability analysis
+should classify them as unreachable. Import a few in `src/index.js` if you want to demo
+reachable-vs-unreachable prioritization.
+
+---
+
 ## Testing the Application
 
 1. Start the server:
