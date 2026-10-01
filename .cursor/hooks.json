@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeShellExecution":  [{ "command": "endorctl ai-audit cursor" }],
+    "beforeMCPExecution":    [{ "command": "endorctl ai-audit cursor" }],
+    "beforeReadFile":        [{ "command": "endorctl ai-audit cursor" }],
+    "afterFileEdit":         [{ "command": "endorctl ai-audit cursor" }],
+    "beforeTabFileRead":     [{ "command": "endorctl ai-audit cursor" }],
+    "preToolUse":            [{ "command": "endorctl ai-audit cursor" }]
+  }
+}
